@@ -11,6 +11,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY --chown=app:app . .
 
+ENV BOT_LOG_DIR=/tmp
+
 USER app
 
 CMD ["python3", "bot.py"]

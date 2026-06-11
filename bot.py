@@ -38,13 +38,16 @@ def setup_logging():
         datefmt="%Y-%m-%d %H:%M:%S",
     )
     handlers = [logging.StreamHandler(sys.stdout)]
-    try:
-        handler_file = RotatingFileHandler(
-            "bot.log", maxBytes=5 * 1024 * 1024, backupCount=3, encoding="utf-8"
-        )
-        handlers.append(handler_file)
-    except Exception:
-        pass
+    if os.environ.get("BOT_LOG_DIR"):
+        log_dir = os.environ["BOT_LOG_DIR"]
+        log_path = os.path.join(log_dir, "bot.log")
+        try:
+            handler_file = RotatingFileHandler(
+                log_path, maxBytes=5 * 1024 * 1024, backupCount=3, encoding="utf-8"
+            )
+            handlers.append(handler_file)
+        except Exception:
+            pass
     for h in handlers:
         h.setFormatter(formatter)
     logging.basicConfig(level=logging.INFO, handlers=handlers)
