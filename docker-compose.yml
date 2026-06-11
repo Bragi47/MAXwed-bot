@@ -2,15 +2,10 @@ services:
   bot:
     build: .
     container_name: maxwed-bot
+    user: "1001:1001"
     restart: always
     env_file:
       - .env
     volumes:
       - ./key.bin:/app/key.bin:ro
       - ./token.enc:/app/token.enc:ro
-    healthcheck:
-      test: ["CMD-SHELL", "pgrep -f bot.py || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 15s

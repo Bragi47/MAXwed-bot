@@ -194,13 +194,20 @@ async def main():
             pass
 
     logger.info("Бот запущен!")
+    max_retries = 5
+    retries = 0
     while not stop_event.is_set():
         try:
             await dp.start_polling(bot, stop_signal=stop_event)
+            retries = 0
         except Exception as e:
             if stop_event.is_set():
                 break
-            logger.exception("Polling crashed: %s", e)
+            retries += 1
+            if retries > max_retries:
+                logger.critical("Превышено число рестартов (%d). Останавливаюсь.", max_retries)
+                break
+            logger.exception("Polling crashed (%d/%d): %s", retries, max_retries, e)
             logger.info("Перезапуск polling через 5 секунд...")
             try:
                 await asyncio.wait_for(stop_event.wait(), timeout=5)

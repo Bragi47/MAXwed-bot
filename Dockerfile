@@ -7,7 +7,6 @@ WORKDIR /app
 RUN chown -R app:app /app
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git docker.io && \
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -17,5 +16,7 @@ COPY --chown=app:app . .
 RUN chmod +x entrypoint.sh
 
 ENV BOT_LOG_DIR=/tmp
+
+USER app
 
 ENTRYPOINT ["/app/entrypoint.sh"]

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-if [ ! -f key.bin ]; then
+if [ ! -f key.bin ] || [ ! -f token.enc ]; then
     echo "=========================================="
     echo "  Токен не найден!"
     echo "  Запусти на хосте:"

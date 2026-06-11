@@ -9,4 +9,3 @@ venv/
 bot.log
 key.bin
 token.enc
-admin.enc

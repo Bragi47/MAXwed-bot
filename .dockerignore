@@ -14,4 +14,3 @@ venv/
 .idea
 key.bin
 token.enc
-admin.enc

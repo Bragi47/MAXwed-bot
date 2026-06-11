@@ -88,7 +88,7 @@ action_stop() {
 }
 
 action_restart() {
-    docker compose restart
+    docker compose up -d --build
     log_info "Бот перезапущен."
 }
 
@@ -102,7 +102,7 @@ action_status() {
 
 action_update() {
     log_info "Загружаю обновления из GitHub..."
-    git pull
+    git stash && git pull && git stash drop || git pull
     log_info "Пересобираю и запускаю..."
     docker compose up -d --build
     log_info "Бот обновлён и запущен."
