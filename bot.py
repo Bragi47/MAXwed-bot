@@ -221,21 +221,23 @@ async def _admin_cmd_handler(callback: CallbackQuery, action: str):
         return
     await callback.answer()
 
+    compose = ["docker", "compose", "-f", "/host-project/docker-compose.yml"]
+
     if action == "status":
-        out = await _run_cmd("docker", "compose", "ps")
+        out = await _run_cmd(*compose, "ps")
         await callback.message.edit_text(f"\U0001F4CA Статус:\n<pre>{out}</pre>", parse_mode="HTML")
 
     elif action == "logs":
-        out = await _run_cmd("docker", "compose", "logs", "--tail", "30")
+        out = await _run_cmd(*compose, "logs", "--tail", "30")
         await callback.message.edit_text(f"\U0001F4DD Последние логи:\n<pre>{out}</pre>", parse_mode="HTML")
 
     elif action == "restart":
         msg = await callback.message.edit_text("\U0001F4BB Перезапуск...")
-        out = await _run_cmd("docker", "compose", "restart")
+        out = await _run_cmd(*compose, "restart")
         await msg.edit_text(f"\U00002705 Перезапущен:\n<pre>{out}</pre>", parse_mode="HTML")
 
     elif action == "start":
-        out = await _run_cmd("docker", "compose", "up", "-d")
+        out = await _run_cmd(*compose, "up", "-d")
         await callback.message.edit_text(f"\U00002705 Запущен:\n<pre>{out}</pre>", parse_mode="HTML")
 
     elif action == "stop_confirm":
@@ -250,7 +252,7 @@ async def _admin_cmd_handler(callback: CallbackQuery, action: str):
         await callback.message.edit_text("\u26A0 Точно остановить бота?", reply_markup=kb)
 
     elif action == "stop_yes":
-        out = await _run_cmd("docker", "compose", "down")
+        out = await _run_cmd(*compose, "down")
         await callback.message.edit_text(f"\u23F9 Остановлен:\n<pre>{out}</pre>", parse_mode="HTML")
 
     elif action == "stop_no":
@@ -269,8 +271,8 @@ async def _admin_cmd_handler(callback: CallbackQuery, action: str):
 
     elif action == "update_yes":
         msg = await callback.message.edit_text("\U0001F504 Обновление...")
-        pull = await _run_cmd("git", "pull", timeout=30)
-        build = await _run_cmd("docker", "compose", "up", "-d", "--build", timeout=120)
+        pull = await _run_cmd("git", "-C", "/host-project", "pull", timeout=30)
+        build = await _run_cmd(*compose, "up", "-d", "--build", timeout=120)
         await msg.edit_text(
             f"\U0001F504 Git pull:\n<pre>{pull[:300]}</pre>\n\n"
             f"\U0001F504 Rebuild:\n<pre>{build[:600]}</pre>",

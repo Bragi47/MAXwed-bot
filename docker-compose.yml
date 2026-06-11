@@ -10,6 +10,7 @@ services:
       - ./token.enc:/app/token.enc:ro
       - ./admin.enc:/app/admin.enc:ro
       - /var/run/docker.sock:/var/run/docker.sock
+      - .:/host-project
     healthcheck:
       test: ["CMD-SHELL", "pgrep -f bot.py || exit 1"]
       interval: 30s
