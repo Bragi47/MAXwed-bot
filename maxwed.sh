@@ -41,6 +41,10 @@ check_deps() {
     return $missing
 }
 
+is_setup_done() {
+    test -f key.bin
+}
+
 banner() {
     clear
     echo -e "${CYAN}"
@@ -130,6 +134,19 @@ action_uninstall() {
 main() {
     if ! check_deps; then
         exit 1
+    fi
+
+    if ! is_setup_done; then
+        echo -e "${CYAN}"
+        echo "+----------------------------------------+"
+        echo "|        MAXwed Bot — первичная          |"
+        echo "|        настройка                       |"
+        echo "+----------------------------------------+"
+        echo -e "${NC}"
+        action_install
+        echo ""
+        log_info "Готово! Бот запущен и работает."
+        exit 0
     fi
 
     while true; do

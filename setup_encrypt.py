@@ -66,7 +66,7 @@ def main():
         ans = input("Перезаписать? (y/N): ").strip().lower()
         if ans != "y":
             print("Настройка отменена.")
-            return
+            sys.exit(0)
         print()
 
     token = prompt_token()
@@ -75,15 +75,7 @@ def main():
     ensure_env(base)
 
     print()
-    print("+------------------------------------------+")
-    print("|  Готово! Запусти бота одной командой:    |")
-    print("|                                          |")
-    print("|    docker compose up -d                  |")
-    print("|                                          |")
-    print("|  Или локально:                           |")
-    print("|    pip install -r requirements.txt        |")
-    print("|    python (или python3) bot.py            |")
-    print("+------------------------------------------+")
+    print("  [OK] Всё готово. Запускаю бота..." )
 
 
 if __name__ == "__main__":
