@@ -4,7 +4,7 @@ RUN addgroup --system --gid 1001 app && \
     adduser --system --uid 1001 --gid 1001 --no-create-home app
 
 WORKDIR /app
-RUN chown app:app /app
+RUN chown -R app:app /app
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git docker.io && \
