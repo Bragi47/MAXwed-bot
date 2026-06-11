@@ -133,10 +133,11 @@ action_uninstall() {
     fi
     log_info "Останавливаю контейнер..."
     docker compose down -v
-    log_info "Удаляю файлы настроек..."
-    rm -f key.bin token.enc admin.enc .env
-    log_info "Готово! Бот удалён."
-    log_info "Если хочешь удалить весь проект: rm -rf $(pwd)"
+    log_info "Удаляю проект..."
+    cd ..
+    rm -rf MAXwed-bot
+    log_info "Готово! Проект полностью удалён."
+    exit 0
 }
 
 main() {
