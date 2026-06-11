@@ -72,14 +72,6 @@ menu() {
 action_install() {
     log_info "Запуск мастера настройки..."
     PYTHONIOENCODING=utf-8 $(get_python) setup_encrypt.py
-    if [ -f key.bin ]; then
-        echo ""
-        log_info "Настроить администраторов?"
-        read -p "Добавить админов? (y/N): " ans
-        if [ "$ans" = "y" ] || [ "$ans" = "Y" ]; then
-            PYTHONIOENCODING=utf-8 $(get_python) setup_admin.py
-        fi
-    fi
     log_info "Сборка и запуск контейнера..."
     docker compose up -d --build
     log_info "Готово! Бот запущен."
@@ -127,7 +119,7 @@ action_reset_token() {
 
 action_setup_admin() {
     log_info "Запуск мастера настройки администраторов..."
-    PYTHONIOENCODING=utf-8 $(get_python) setup_admin.py
+    PYTHONIOENCODING=utf-8 $(get_python) setup_encrypt.py --admin
     log_info "Готово. Перезапусти бота, если он запущен."
 }
 
@@ -142,7 +134,7 @@ action_uninstall() {
     log_info "Останавливаю контейнер..."
     docker compose down -v
     log_info "Удаляю файлы настроек..."
-    rm -f key.bin token.enc .env
+    rm -f key.bin token.enc admin.enc .env
     log_info "Готово! Бот удалён."
     log_info "Если хочешь удалить весь проект: rm -rf $(pwd)"
 }
