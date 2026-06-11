@@ -11,11 +11,18 @@
 git clone https://github.com/Bragi47/MAXwed-bot.git
 cd MAXwed-bot
 
-# 2. Запусти мастер настройки (введи токен от @BotFather)
-python setup_encrypt.py
+# 2. Запусти менеджер
+chmod +x maxwed.sh
+./maxwed.sh
+```
 
-# 3. Запусти бота
-docker compose up -d
+Выбери пункт «1) Полная установка» — менеджер сам запросит токен, настроит всё и запустит бота.
+
+Или вручную:
+
+```bash
+python3 setup_encrypt.py    # ввести токен
+docker compose up -d        # запустить
 ```
 
 ## Команды

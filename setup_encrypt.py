@@ -3,6 +3,7 @@
 
 Запусти один раз после клонирования репозитория:
   python setup_encrypt.py
+  (или python3, если python не установлен)
 """
 
 import sys
@@ -81,7 +82,7 @@ def main():
     print("|                                          |")
     print("|  Или локально:                           |")
     print("|    pip install -r requirements.txt        |")
-    print("|    python bot.py                          |")
+    print("|    python (или python3) bot.py            |")
     print("+------------------------------------------+")
 
 

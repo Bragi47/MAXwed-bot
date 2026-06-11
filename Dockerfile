@@ -12,4 +12,4 @@ COPY --chown=app:app . .
 
 USER app
 
-CMD ["python", "bot.py"]
+CMD ["python3", "bot.py"]

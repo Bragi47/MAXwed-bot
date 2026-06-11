@@ -12,12 +12,10 @@ TOKEN_ENC_FILE = BASE_DIR / "token.enc"
 
 
 def _get_token() -> str:
-    # 1. Проверяем BOT_TOKEN из .env (на случай legacy-конфигурации)
     token = os.getenv("BOT_TOKEN", "")
     if token:
         return token
 
-    # 2. Расшифровываем из token.enc
     if KEY_FILE.exists() and TOKEN_ENC_FILE.exists():
         key = KEY_FILE.read_bytes()
         encrypted = TOKEN_ENC_FILE.read_bytes()
@@ -36,3 +34,4 @@ def _get_token() -> str:
 
 BOT_TOKEN: str = _get_token()
 PROXY_URL: str | None = os.getenv("PROXY_URL") or None
+WEB_URL: str = os.getenv("WEB_URL", "https://web.max.ru/")

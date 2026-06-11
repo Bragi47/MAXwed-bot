@@ -4,6 +4,7 @@ import asyncio
 import logging
 from logging.handlers import RotatingFileHandler
 import sys
+import html
 from collections import defaultdict
 from time import time
 
@@ -22,9 +23,7 @@ from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.filters import Command
 from aiogram.__meta__ import __version__
 
-from config import BOT_TOKEN, PROXY_URL
-
-WEB_URL = "https://web.max.ru/"
+from config import BOT_TOKEN, PROXY_URL, WEB_URL
 
 
 def mask_proxy(url: str | None) -> str | None:
@@ -47,7 +46,6 @@ def setup_logging():
     logging.basicConfig(level=logging.INFO, handlers=[handler_file, handler_stdout])
 
 
-setup_logging()
 logger = logging.getLogger(__name__)
 
 dp = Dispatcher()
@@ -110,8 +108,9 @@ async def cmd_start(message: types.Message):
             ]
         ]
     )
+    safe_name = html.escape(message.from_user.first_name)
     await message.answer(
-        f"Привет, {message.from_user.first_name}! \U0001F44B\n\n"
+        f"Привет, {safe_name}! \U0001F44B\n\n"
         f"Нажми кнопку ниже, чтобы открыть веб-версию MAX:",
         reply_markup=keyboard,
     )
@@ -147,11 +146,15 @@ async def main():
     ]
     await bot.set_my_commands(commands, scope=BotCommandScopeDefault())
     logger.info("Бот запущен!")
-    try:
-        await dp.start_polling(bot)
-    finally:
-        await bot.session.close()
+    while True:
+        try:
+            await dp.start_polling(bot)
+        except Exception as e:
+            logger.exception("Polling crashed: %s", e)
+        logger.info("Перезапуск polling через 5 секунд...")
+        await asyncio.sleep(5)
 
 
 if __name__ == "__main__":
+    setup_logging()
     asyncio.run(main())
