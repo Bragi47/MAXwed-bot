@@ -1,0 +1,15 @@
+.env
+.env.*
+__pycache__/
+*.pyc
+*.pyo
+*.log
+bot.log
+.venv
+venv/
+.git
+.gitignore
+.gitattributes
+.vscode
+.idea
+key.bin

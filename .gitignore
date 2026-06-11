@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env.local
+*.log
+bot.log
+key.bin
+token.enc

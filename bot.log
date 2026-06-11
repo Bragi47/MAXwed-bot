@@ -1,0 +1,46 @@
+2026-06-10 17:54:04 [INFO] __main__: Использую прокси: http://***:***@213.176.112.160:558
+2026-06-10 17:54:04 [INFO] __main__: Бот запущен!
+2026-06-10 17:54:04 [INFO] aiogram.dispatcher: Start polling
+2026-06-10 17:54:05 [INFO] aiogram.dispatcher: Polling stopped
+2026-06-10 17:54:49 [INFO] __main__: Использую прокси: http://***:***@213.176.112.160:558
+2026-06-10 17:54:49 [INFO] __main__: Бот запущен!
+2026-06-10 17:54:49 [INFO] aiogram.dispatcher: Start polling
+2026-06-10 17:54:50 [INFO] aiogram.dispatcher: Run polling for bot @MAXwed_bot id=8701763801 - 'MAXwedbot'
+2026-06-10 17:54:54 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-06-10 17:54:54 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8701763801)
+2026-06-10 17:55:00 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-06-10 17:55:00 [WARNING] aiogram.dispatcher: Sleep for 1.519556 seconds and try again... (tryings = 1, bot id = 8701763801)
+2026-06-10 17:57:28 [INFO] __main__: Использую прокси: http://***:***@213.176.112.160:558
+2026-06-10 17:57:28 [INFO] __main__: Бот запущен!
+2026-06-10 17:57:28 [INFO] aiogram.dispatcher: Start polling
+2026-06-10 17:57:28 [INFO] aiogram.dispatcher: Run polling for bot @MAXwed_bot id=8701763801 - 'MAXwedbot'
+2026-06-10 17:57:34 [INFO] aiogram.event: Update id=198814295 is handled. Duration 547 ms by bot id=8701763801
+2026-06-10 17:57:37 [INFO] aiogram.event: Update id=198814296 is handled. Duration 202 ms by bot id=8701763801
+2026-06-10 17:57:45 [INFO] aiogram.event: Update id=198814297 is handled. Duration 155 ms by bot id=8701763801
+2026-06-10 17:59:43 [INFO] aiogram.dispatcher: Polling stopped
+2026-06-10 17:59:44 [INFO] aiogram.dispatcher: Polling stopped for bot @MAXwed_bot id=8701763801 - 'MAXwedbot'
+2026-06-10 18:00:16 [INFO] __main__: Использую прокси: http://***:***@213.176.112.160:558
+2026-06-10 18:00:16 [INFO] __main__: Бот запущен!
+2026-06-10 18:00:16 [INFO] aiogram.dispatcher: Start polling
+2026-06-10 18:00:17 [INFO] aiogram.dispatcher: Run polling for bot @MAXwed_bot id=8701763801 - 'MAXwedbot'
+2026-06-10 18:01:08 [INFO] __main__: Использую прокси: http://***:***@213.176.112.160:558
+2026-06-10 18:01:08 [INFO] __main__: Бот запущен!
+2026-06-10 18:01:08 [INFO] aiogram.dispatcher: Start polling
+2026-06-10 18:01:08 [INFO] aiogram.dispatcher: Run polling for bot @MAXwed_bot id=8701763801 - 'MAXwedbot'
+2026-06-10 18:01:16 [INFO] aiogram.event: Update id=198814298 is handled. Duration 545 ms by bot id=8701763801
+2026-06-10 18:02:08 [INFO] aiogram.event: Update id=198814299 is handled. Duration 172 ms by bot id=8701763801
+2026-06-10 18:07:18 [INFO] aiogram.dispatcher: Polling stopped
+2026-06-10 18:07:18 [INFO] aiogram.dispatcher: Polling stopped for bot @MAXwed_bot id=8701763801 - 'MAXwedbot'
+2026-06-10 18:07:22 [INFO] __main__: Использую прокси: http://***:***@213.176.112.160:558
+2026-06-10 18:07:22 [INFO] __main__: Бот запущен!
+2026-06-10 18:07:22 [INFO] aiogram.dispatcher: Start polling
+2026-06-10 18:07:23 [INFO] aiogram.dispatcher: Run polling for bot @MAXwed_bot id=8701763801 - 'MAXwedbot'
+2026-06-10 18:07:31 [INFO] aiogram.event: Update id=198814300 is handled. Duration 516 ms by bot id=8701763801
+2026-06-10 18:18:32 [INFO] aiogram.event: Update id=198814301 is handled. Duration 140 ms by bot id=8701763801
+2026-06-10 18:19:46 [INFO] aiogram.event: Update id=198814302 is handled. Duration 141 ms by bot id=8701763801
+2026-06-10 18:40:36 [INFO] aiogram.event: Update id=198814303 is handled. Duration 155 ms by bot id=8701763801
+2026-06-11 08:25:43 [INFO] __main__: Использую прокси: http://***:***@213.176.112.160:558
+2026-06-11 08:25:44 [INFO] __main__: Бот запущен!
+2026-06-11 08:25:44 [INFO] aiogram.dispatcher: Start polling
+2026-06-11 08:25:44 [INFO] aiogram.dispatcher: Run polling for bot @MAXwed_bot id=8701763801 - 'MAX wed'
+2026-06-11 08:25:45 [INFO] aiogram.event: Update id=198814304 is handled. Duration 562 ms by bot id=8701763801
