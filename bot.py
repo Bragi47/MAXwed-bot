@@ -37,13 +37,17 @@ def setup_logging():
         "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
-    handler_file = RotatingFileHandler(
-        "bot.log", maxBytes=5 * 1024 * 1024, backupCount=3, encoding="utf-8"
-    )
-    handler_file.setFormatter(formatter)
-    handler_stdout = logging.StreamHandler(sys.stdout)
-    handler_stdout.setFormatter(formatter)
-    logging.basicConfig(level=logging.INFO, handlers=[handler_file, handler_stdout])
+    handlers = [logging.StreamHandler(sys.stdout)]
+    try:
+        handler_file = RotatingFileHandler(
+            "bot.log", maxBytes=5 * 1024 * 1024, backupCount=3, encoding="utf-8"
+        )
+        handlers.append(handler_file)
+    except (OSError, PermissionError):
+        pass
+    for h in handlers:
+        h.setFormatter(formatter)
+    logging.basicConfig(level=logging.INFO, handlers=handlers)
 
 
 logger = logging.getLogger(__name__)
