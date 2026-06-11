@@ -70,7 +70,7 @@ menu() {
 
 action_install() {
     log_info "Запуск мастера настройки..."
-    $(get_python) setup_encrypt.py
+    PYTHONIOENCODING=utf-8 $(get_python) setup_encrypt.py
     log_info "Сборка и запуск контейнера..."
     docker compose up -d --build
     log_info "Готово! Бот запущен."
@@ -109,7 +109,7 @@ action_update() {
 
 action_reset_token() {
     log_info "Перезапись токена..."
-    $(get_python) setup_encrypt.py
+    PYTHONIOENCODING=utf-8 $(get_python) setup_encrypt.py
     log_info "Перезапускаю бота..."
     docker compose restart
     log_info "Токен обновлён."

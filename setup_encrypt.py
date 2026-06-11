@@ -8,6 +8,7 @@
 
 import sys
 import os
+import io
 import shutil
 from pathlib import Path
 
@@ -55,7 +56,24 @@ def ensure_env(base: Path):
         print(f"  [OK] .env - создан из .env.example")
 
 
+def fix_encoding():
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        if not stream or not hasattr(stream, "buffer"):
+            continue
+        try:
+            wrapped = io.TextIOWrapper(stream.buffer, encoding="utf-8", errors="replace")
+            if stream is sys.stdin:
+                sys.stdin = wrapped
+            elif stream is sys.stdout:
+                sys.stdout = wrapped
+            else:
+                sys.stderr = wrapped
+        except Exception:
+            pass
+
+
 def main():
+    fix_encoding()
     print(BANNER)
     base = Path(__file__).resolve().parent
     key_path = base / "key.bin"
