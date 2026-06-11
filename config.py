@@ -9,6 +9,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent
 KEY_FILE = BASE_DIR / "key.bin"
 TOKEN_ENC_FILE = BASE_DIR / "token.enc"
+ADMIN_ENC_FILE = BASE_DIR / "admin.enc"
 
 
 def _get_token() -> str:
@@ -32,6 +33,20 @@ def _get_token() -> str:
     )
 
 
+def _get_admin_ids() -> list[int]:
+    if not KEY_FILE.exists() or not ADMIN_ENC_FILE.exists():
+        return []
+    try:
+        key = KEY_FILE.read_bytes()
+        encrypted = ADMIN_ENC_FILE.read_bytes()
+        cipher = Fernet(key)
+        raw = cipher.decrypt(encrypted).decode()
+        return [int(x.strip()) for x in raw.split(",") if x.strip()]
+    except Exception:
+        return []
+
+
 BOT_TOKEN: str = _get_token()
+ADMIN_IDS: list[int] = _get_admin_ids()
 PROXY_URL: str | None = os.getenv("PROXY_URL") or None
 WEB_URL: str = os.getenv("WEB_URL", "https://web.max.ru/")

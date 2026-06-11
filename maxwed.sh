@@ -63,14 +63,23 @@ menu() {
     echo " 6)  Статус"
     echo " 7)  Обновить (git pull + rebuild)"
     echo " 8)  Сменить токен"
-    echo " 9)  Полностью удалить"
-    echo " 10) Выход"
+    echo " 9)  Настроить администраторов"
+    echo " 10) Полностью удалить"
+    echo " 11) Выход"
     echo ""
 }
 
 action_install() {
     log_info "Запуск мастера настройки..."
     PYTHONIOENCODING=utf-8 $(get_python) setup_encrypt.py
+    if [ -f key.bin ]; then
+        echo ""
+        log_info "Настроить администраторов?"
+        read -p "Добавить админов? (y/N): " ans
+        if [ "$ans" = "y" ] || [ "$ans" = "Y" ]; then
+            PYTHONIOENCODING=utf-8 $(get_python) setup_admin.py
+        fi
+    fi
     log_info "Сборка и запуск контейнера..."
     docker compose up -d --build
     log_info "Готово! Бот запущен."
@@ -114,6 +123,12 @@ action_reset_token() {
     log_info "Перезапускаю бота..."
     docker compose restart
     log_info "Токен обновлён."
+}
+
+action_setup_admin() {
+    log_info "Запуск мастера настройки администраторов..."
+    PYTHONIOENCODING=utf-8 $(get_python) setup_admin.py
+    log_info "Готово. Перезапусти бота, если он запущен."
 }
 
 action_uninstall() {
@@ -164,9 +179,10 @@ main() {
             6)  action_status ;;
             7)  action_update ;;
             8)  action_reset_token ;;
-            9)  action_uninstall ;;
-            10) log_info "Пока!"; exit 0 ;;
-            *)  log_error "Неверный пункт. Выбери 1-10." ;;
+            9)  action_setup_admin ;;
+            10) action_uninstall ;;
+            11) log_info "Пока!"; exit 0 ;;
+            *)  log_error "Неверный пункт. Выбери 1-11." ;;
         esac
         echo ""
         read -p "Нажми Enter, чтобы продолжить..."

@@ -10,6 +10,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY --chown=app:app . .
+RUN chmod +x entrypoint.sh
 
 ENV BOT_LOG_DIR=/tmp
 

@@ -8,6 +8,7 @@ import sys
 import html
 from collections import defaultdict
 from time import time
+from typing import Any
 
 from aiohttp import ClientSession, TCPConnector, ClientTimeout
 from aiohttp.hdrs import USER_AGENT
@@ -25,7 +26,7 @@ from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.filters import Command
 from aiogram.__meta__ import __version__
 
-from config import BOT_TOKEN, PROXY_URL, WEB_URL
+from config import BOT_TOKEN, PROXY_URL, WEB_URL, ADMIN_IDS
 
 
 def mask_proxy(url: str | None) -> str | None:
@@ -166,6 +167,126 @@ async def callback_help(callback: CallbackQuery):
     await callback.answer()
 
 
+# ---- Admin commands ----
+
+ADMIN_COMMANDS = ["admin", "status", "logs", "restart", "stop", "start", "update", "rebuild"]
+
+
+def is_admin(user_id: int | None) -> bool:
+    return user_id in ADMIN_IDS
+
+
+async def _run_cmd(*args: str, timeout: int = 15) -> str:
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            *args,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT,
+        )
+        stdout, _ = await asyncio.wait_for(proc.communicate(), timeout=timeout)
+        out = stdout.decode(errors="replace").strip()
+        return out[:1000] if len(out) > 1000 else out
+    except asyncio.TimeoutError:
+        return "Команда превысила таймаут."
+    except Exception as e:
+        return f"Ошибка: {e}"
+
+
+@dp.message(Command("admin"))
+async def cmd_admin(message: types.Message):
+    if not is_admin(message.from_user.id):
+        return
+    kb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="\U0001F4CA Статус", callback_data="admin_status"),
+                InlineKeyboardButton(text="\U0001F4BB Перезапустить", callback_data="admin_restart"),
+            ],
+            [
+                InlineKeyboardButton(text="\u23F9 Остановить", callback_data="admin_stop_confirm"),
+                InlineKeyboardButton(text="\u25B6 Запустить", callback_data="admin_start"),
+            ],
+            [
+                InlineKeyboardButton(text="\U0001F504 Обновить", callback_data="admin_update_confirm"),
+                InlineKeyboardButton(text="\U0001F4DD Логи", callback_data="admin_logs"),
+            ],
+        ]
+    )
+    await message.answer("\U0001F6E1 Панель управления:", reply_markup=kb)
+
+
+async def _admin_cmd_handler(callback: CallbackQuery, action: str):
+    if not is_admin(callback.from_user.id):
+        await callback.answer("Нет доступа", show_alert=True)
+        return
+    await callback.answer()
+
+    if action == "status":
+        out = await _run_cmd("docker", "compose", "ps")
+        await callback.message.edit_text(f"\U0001F4CA Статус:\n<pre>{out}</pre>", parse_mode="HTML")
+
+    elif action == "logs":
+        out = await _run_cmd("docker", "compose", "logs", "--tail", "30")
+        await callback.message.edit_text(f"\U0001F4DD Последние логи:\n<pre>{out}</pre>", parse_mode="HTML")
+
+    elif action == "restart":
+        msg = await callback.message.edit_text("\U0001F4BB Перезапуск...")
+        out = await _run_cmd("docker", "compose", "restart")
+        await msg.edit_text(f"\U00002705 Перезапущен:\n<pre>{out}</pre>", parse_mode="HTML")
+
+    elif action == "start":
+        out = await _run_cmd("docker", "compose", "up", "-d")
+        await callback.message.edit_text(f"\U00002705 Запущен:\n<pre>{out}</pre>", parse_mode="HTML")
+
+    elif action == "stop_confirm":
+        kb = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(text="\u26A0 Да, остановить", callback_data="admin_stop_yes"),
+                    InlineKeyboardButton(text="\u274C Отмена", callback_data="admin_stop_no"),
+                ]
+            ]
+        )
+        await callback.message.edit_text("\u26A0 Точно остановить бота?", reply_markup=kb)
+
+    elif action == "stop_yes":
+        out = await _run_cmd("docker", "compose", "down")
+        await callback.message.edit_text(f"\u23F9 Остановлен:\n<pre>{out}</pre>", parse_mode="HTML")
+
+    elif action == "stop_no":
+        await callback.message.edit_text("\u274C Отменено.")
+
+    elif action == "update_confirm":
+        kb = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(text="\u26A0 Да, обновить", callback_data="admin_update_yes"),
+                    InlineKeyboardButton(text="\u274C Отмена", callback_data="admin_update_no"),
+                ]
+            ]
+        )
+        await callback.message.edit_text("\u26A0 Обновить код и перезапустить бота?", reply_markup=kb)
+
+    elif action == "update_yes":
+        msg = await callback.message.edit_text("\U0001F504 Обновление...")
+        pull = await _run_cmd("git", "pull", timeout=30)
+        build = await _run_cmd("docker", "compose", "up", "-d", "--build", timeout=120)
+        await msg.edit_text(
+            f"\U0001F504 Git pull:\n<pre>{pull[:300]}</pre>\n\n"
+            f"\U0001F504 Rebuild:\n<pre>{build[:600]}</pre>",
+            parse_mode="HTML",
+        )
+
+    elif action == "update_no":
+        await callback.message.edit_text("\u274C Отменено.")
+
+
+@dp.callback_query(F.data.startswith("admin_"))
+async def callback_admin(callback: CallbackQuery):
+    action = callback.data.replace("admin_", "", 1)
+    await _admin_cmd_handler(callback, action)
+
+
 async def shutdown(bot: Bot):
     logger.info("Остановка бота...")
     await bot.session.close()
@@ -178,6 +299,7 @@ async def main():
         BotCommand(command="start", description="Открыть MAX"),
         BotCommand(command="help", description="Список команд"),
         BotCommand(command="about", description="О боте"),
+        BotCommand(command="admin", description="Панель управления"),
     ]
     await bot.set_my_commands(commands, scope=BotCommandScopeDefault())
 
