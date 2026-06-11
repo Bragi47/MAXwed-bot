@@ -1,6 +1,7 @@
 import os
 import re
 import asyncio
+import signal
 import logging
 from logging.handlers import RotatingFileHandler
 import sys
@@ -11,13 +12,14 @@ from time import time
 from aiohttp import ClientSession, TCPConnector, ClientTimeout
 from aiohttp.hdrs import USER_AGENT
 from aiohttp.http import SERVER_SOFTWARE
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, types, F
 from aiogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
     WebAppInfo,
     BotCommand,
     BotCommandScopeDefault,
+    CallbackQuery,
 )
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.filters import Command
@@ -111,7 +113,13 @@ async def cmd_start(message: types.Message):
                     text="\U0001F4FA Открыть MAX",
                     web_app=WebAppInfo(url=WEB_URL),
                 )
-            ]
+            ],
+            [
+                InlineKeyboardButton(
+                    text="\U0001F4CB Помощь",
+                    callback_data="help",
+                )
+            ],
         ]
     )
     safe_name = html.escape(message.from_user.first_name)
@@ -143,6 +151,27 @@ async def cmd_about(message: types.Message):
     await message.answer(text)
 
 
+@dp.callback_query(F.data == "help")
+async def callback_help(callback: CallbackQuery):
+    text = (
+        "\U0001F4CB Доступные команды:\n\n"
+        "/start — Приветствие и кнопка для открытия MAX\n"
+        "/help  — Список команд\n"
+        "/about — О боте"
+    )
+    try:
+        await callback.message.edit_text(text, reply_markup=None)
+    except Exception:
+        await callback.message.answer(text)
+    await callback.answer()
+
+
+async def shutdown(bot: Bot):
+    logger.info("Остановка бота...")
+    await bot.session.close()
+    await dp.stop_polling()
+
+
 async def main():
     bot = create_bot()
     commands = [
@@ -151,14 +180,35 @@ async def main():
         BotCommand(command="about", description="О боте"),
     ]
     await bot.set_my_commands(commands, scope=BotCommandScopeDefault())
-    logger.info("Бот запущен!")
-    while True:
+
+    stop_event = asyncio.Event()
+
+    def signal_handler():
+        logger.info("Получен сигнал завершения...")
+        stop_event.set()
+
+    loop = asyncio.get_running_loop()
+    for sig in (signal.SIGTERM, signal.SIGINT):
         try:
-            await dp.start_polling(bot)
+            loop.add_signal_handler(sig, signal_handler)
+        except NotImplementedError:
+            pass
+
+    logger.info("Бот запущен!")
+    while not stop_event.is_set():
+        try:
+            await dp.start_polling(bot, stop_signal=stop_event)
         except Exception as e:
+            if stop_event.is_set():
+                break
             logger.exception("Polling crashed: %s", e)
-        logger.info("Перезапуск polling через 5 секунд...")
-        await asyncio.sleep(5)
+            logger.info("Перезапуск polling через 5 секунд...")
+            try:
+                await asyncio.wait_for(stop_event.wait(), timeout=5)
+            except asyncio.TimeoutError:
+                pass
+
+    await shutdown(bot)
 
 
 if __name__ == "__main__":

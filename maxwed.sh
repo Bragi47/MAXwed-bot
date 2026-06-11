@@ -77,6 +77,7 @@ action_install() {
 }
 
 action_start() {
+    touch .env
     docker compose up -d
     log_info "Бот запущен."
 }

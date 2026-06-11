@@ -15,4 +15,4 @@ ENV BOT_LOG_DIR=/tmp
 
 USER app
 
-CMD ["python3", "bot.py"]
+ENTRYPOINT ["/app/entrypoint.sh"]
