@@ -8,7 +8,7 @@
 
 ```bash
 # 1. Клонируй репозиторий
-git clone https://github.com/ТВОЙ_ЮЗЕРНЕЙМ/MAXwed-bot.git
+git clone https://github.com/Bragi47/MAXwed-bot.git
 cd MAXwed-bot
 
 # 2. Запусти мастер настройки (введи токен от @BotFather)
