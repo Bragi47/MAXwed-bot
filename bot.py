@@ -43,7 +43,7 @@ def setup_logging():
             "bot.log", maxBytes=5 * 1024 * 1024, backupCount=3, encoding="utf-8"
         )
         handlers.append(handler_file)
-    except (OSError, PermissionError):
+    except Exception:
         pass
     for h in handlers:
         h.setFormatter(formatter)
