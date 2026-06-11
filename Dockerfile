@@ -1,3 +1,9 @@
+FROM python:3.12-slim AS builder
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+
 FROM python:3.12-slim
 
 RUN addgroup --system --gid 1001 app && \
@@ -6,11 +12,7 @@ RUN addgroup --system --gid 1001 app && \
 WORKDIR /app
 RUN chown -R app:app /app
 
-RUN apt-get update && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 
 COPY --chown=app:app . .
 RUN chmod +x entrypoint.sh

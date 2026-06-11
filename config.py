@@ -34,3 +34,4 @@ def _get_token() -> str:
 BOT_TOKEN: str = _get_token()
 PROXY_URL: str | None = os.getenv("PROXY_URL") or None
 WEB_URL: str = os.getenv("WEB_URL", "https://web.max.ru/")
+NOTIFY_CHAT_ID: int | None = int(os.getenv("NOTIFY_CHAT_ID")) if os.getenv("NOTIFY_CHAT_ID") else None
