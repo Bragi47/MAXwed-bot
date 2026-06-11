@@ -8,7 +8,7 @@ import html
 from collections import defaultdict
 from time import time
 
-from aiohttp import ClientSession, TCPConnector
+from aiohttp import ClientSession, TCPConnector, ClientTimeout
 from aiohttp.hdrs import USER_AGENT
 from aiohttp.http import SERVER_SOFTWARE
 from aiogram import Bot, Dispatcher, types
@@ -89,6 +89,7 @@ class HttpProxySession(AiohttpSession):
                     USER_AGENT: f"{SERVER_SOFTWARE} aiogram/{__version__}",
                 },
                 trust_env=True,
+                timeout=ClientTimeout(total=30),
             )
             self._should_reset_connector = False
         return self._session
@@ -97,8 +98,6 @@ class HttpProxySession(AiohttpSession):
 def create_bot() -> Bot:
     if PROXY_URL:
         logger.info("Использую прокси: %s", mask_proxy(PROXY_URL))
-        os.environ["HTTP_PROXY"] = PROXY_URL
-        os.environ["HTTPS_PROXY"] = PROXY_URL
         return Bot(token=BOT_TOKEN, session=HttpProxySession())
     return Bot(token=BOT_TOKEN)
 
