@@ -5,8 +5,8 @@
 При нажатии кнопки сайт открывается внутри Telegram как Mini App.
 
 ## Быстрый старт
-
 ```bash
+
 # 1. Клонируй репозиторий
 git clone https://github.com/Bragi47/MAXwed-bot.git
 cd MAXwed-bot
@@ -41,8 +41,8 @@ chmod +x maxwed.sh
 | 10    | Выход                              |
 
 ## Docker Compose
-
 ```bash
+
 # Сборка и запуск
 docker compose up -d --build
 
